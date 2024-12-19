@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
 using Cinemachine;
+
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : NetworkBehaviour 
 {
@@ -16,61 +17,73 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private CinemachineVirtualCamera vc;
     [SerializeField] private AudioListener listener;
-
     #endregion
-    #region Variables : Rotation
 
-    
+    #region Variables : Rotation
     private float _cameraRotationY;
     private float _cameraRotationX;
     [SerializeField] private float cameraRotationLimit = 45f;
-
     [SerializeField] private Transform cameraPivot;
     private Vector3 _direction;
     [SerializeField] private float rotationSpeed = 5f;
     #endregion
+
     #region Variables : Gravity
     private float _gravity = -9.81f;
     [SerializeField] private float gravityMultiplier = 1.0f;
     #endregion
+
     #region Variables : Jumping
     [SerializeField] private float jumpPower;
     private int _numberOfJumps;
     [SerializeField] private int maxNumberOfJumps = 2;
     #endregion
+
     [SerializeField] private Movement movement;
+
     #region Variables : Cheese
     private GameObject heldCheese; // Only one cheese at a time
     [SerializeField] private Transform cheeseAttachPoint;
     [SerializeField] private GameObject cheesePrefab;
     [SerializeField] private GameObject cheeseNetworkPrefab;
-    
+
     private NetworkVariable<bool> hasCheese = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     #endregion
 
     #region Variables : Animation
     [SerializeField] private Animator animator;
-    private bool isJumping;
-    
+
+    private NetworkVariable<bool> isJumping = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     private bool isMoving;
+
+    // Network variables for animation states
+    private NetworkVariable<bool> isWalking = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    private NetworkVariable<bool> isRunning = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     #endregion
-    public override void OnNetworkSpawn(){
-        if(IsOwner){
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
             listener.enabled = true;
             vc.Priority = 1;
+            _mainCamera.gameObject.SetActive(true);
         }
-        else{
+        else
+        {
             vc.Priority = 0;
+            _mainCamera.gameObject.SetActive(false);
         }
 
-        hasCheese.OnValueChanged += (previous, current) => {
-            if (current) AttachCheese();
-            else DetachCheese();
-        };
+        // Subscribe to the network variable changes for animation sync
+        isWalking.OnValueChanged += OnWalkingStateChanged;
+        isRunning.OnValueChanged += OnRunningStateChanged;
+        isJumping.OnValueChanged += OnJumpingStateChanged;
     }
-    private void Start(){
+
+    private void Start()
+    {
         _characterController = GetComponent<CharacterController>();
-        //_mainCamera = Camera.main;
         playerInput = new();
         playerInput.Enable();
 
@@ -78,17 +91,50 @@ public class PlayerController : NetworkBehaviour
         Cursor.visible = false;
     }
 
-    private void Update(){
-        if(IsOwner){
-        ApplyRotation();
-        ApplyGravity();
-        ApplyMovement();
-        HandleCameraRotation();
-        ApplyAnimationStates();}
+    private void Update()
+    {
+        if (IsOwner)
+        {
+            ApplyRotation();
+            ApplyGravity();
+            ApplyMovement();
+            HandleCameraRotation();
+            ApplyAnimationStates();
+        }
     }
-    
 
-    
+    private void ApplyAnimationStates()
+    {
+        if (isMoving)
+        {
+            isWalking.Value = true;
+            isRunning.Value = movement.isSprinting;
+        }
+        else
+        {
+            isWalking.Value = false;
+            isRunning.Value = false;
+        }
+
+        // Jumping animation state
+        
+    }
+
+    private void OnWalkingStateChanged(bool previous, bool current)
+    {
+        animator.SetBool("isWalking", current);
+    }
+
+    private void OnRunningStateChanged(bool previous, bool current)
+    {
+        animator.SetBool("isRunning", current);
+    }
+
+    private void OnJumpingStateChanged(bool previous, bool current)
+    {
+        animator.SetBool("isJumping", current);
+    }
+
     public void CollectCheese()
     {
         if (IsServer && !hasCheese.Value)
@@ -127,22 +173,23 @@ public class PlayerController : NetworkBehaviour
             // Attach visual cheese on each client
             heldCheese = Instantiate(cheesePrefab, cheeseAttachPoint.position, Quaternion.identity);
             heldCheese.transform.SetParent(cheeseAttachPoint, true);
-            
         }
     }
+
     private void DetachCheese()
     {
         if (heldCheese != null)
         {
             Destroy(heldCheese);
             heldCheese = null;
-            
         }
     }
+
     public bool HasCheese()
     {
         return heldCheese != null;
     }
+
     private void HandleCameraRotation()
     {
         // Get mouse input
@@ -158,98 +205,86 @@ public class PlayerController : NetworkBehaviour
         transform.rotation = Quaternion.Euler(0, _cameraRotationY, 0);
     }
 
-    private void ApplyAnimationStates() {
-        // Handle Running
-        if (isMoving) {
-            if(movement.isSprinting)animator.SetBool("isRunning",true);
-            else animator.SetBool("isRunning",false);
-            animator.SetBool("isWalking", true);
-        } else {
-            animator.SetBool("isRunning",false);
-            animator.SetBool("isWalking", false);
-        }
+    private void ApplyRotation()
+    {
+        if (_input.sqrMagnitude == 0) return;
 
-        // Handle Jumping
-        if (isJumping) {
-            animator.SetBool("isJumping", true);
-        } else {
-            animator.SetBool("isJumping", false);
-        }
-    }
-    private void ApplyRotation(){
-        if(_input.sqrMagnitude == 0) return;
         _direction = Quaternion.Euler(0.0f, _mainCamera.transform.eulerAngles.y, 0.0f) * new Vector3(_input.x, 0.0f, _input.y);
-
-        var targetRotation = Quaternion.LookRotation(_direction,Vector3.up);
-
-        transform.rotation = Quaternion.RotateTowards(transform.rotation,targetRotation, rotationSpeed * Time.deltaTime);
+        var targetRotation = Quaternion.LookRotation(_direction, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
-    private void ApplyMovement(){
+
+    private void ApplyMovement()
+    {
         var targetSpeed = movement.isSprinting ? movement.speed * movement.multiplier : movement.speed;
-        movement.currentSpeed = Mathf.MoveTowards(movement.currentSpeed, targetSpeed, movement.acceleration * Time.deltaTime); 
+        movement.currentSpeed = Mathf.MoveTowards(movement.currentSpeed, targetSpeed, movement.acceleration * Time.deltaTime);
         _characterController.Move(_direction * movement.currentSpeed * Time.deltaTime);
     }
 
-    private void ApplyGravity(){
-        if(IsGrounded() && _velocity < 0){
+    private void ApplyGravity()
+    {
+        if (IsGrounded() && _velocity < 0)
+        {
             _velocity = -1.0f;
         }
-        else{
+        else
+        {
             _velocity += _gravity * gravityMultiplier * Time.deltaTime;
         }
         _direction.y = _velocity;
     }
 
-    public void Jump(InputAction.CallbackContext context){
-        if(!context.started)return;
-        if(!IsGrounded() && _numberOfJumps >= maxNumberOfJumps) return;
-        if (_numberOfJumps == 0) 
+    public void Jump(InputAction.CallbackContext context)
+    {
+        if (!context.started) return;
+        if (!IsGrounded() && _numberOfJumps >= maxNumberOfJumps) return;
+        if(IsOwner){
+        if (_numberOfJumps == 0)
         {
-            isJumping = true; 
+            isJumping.Value = true;
             StartCoroutine(WaitForLanding());
         }
         _numberOfJumps++;
-        _velocity = jumpPower;
-
-        //alternative, for the following jumps to be less powerful
-        //_velocity = jumpPower / _numberOfJumps;
+        _velocity = jumpPower;}
     }
 
-    public void Sprint(InputAction.CallbackContext context){
+    public void Sprint(InputAction.CallbackContext context)
+    {
         movement.isSprinting = context.started || context.performed;
     }
 
-    public void Move(InputAction.CallbackContext context){
+    public void Move(InputAction.CallbackContext context)
+    {
         _input = context.ReadValue<Vector2>();
         _direction = new Vector3(_input.x, 0.0f, _input.y);
 
         isMoving = _input.sqrMagnitude > 0;
-    }    
-
-    public void RightClick(InputAction.CallbackContext context){
-        movement.isRightClicking = context.started || context.performed; 
     }
 
-    private IEnumerator WaitForLanding(){
-        yield return new WaitUntil(()=> !IsGrounded());
+    public void RightClick(InputAction.CallbackContext context)
+    {
+        movement.isRightClicking = context.started || context.performed;
+    }
+
+    private IEnumerator WaitForLanding()
+    {
+        yield return new WaitUntil(() => !IsGrounded());
         yield return new WaitUntil(IsGrounded);
-        
-        isJumping = false;
+
+        isJumping.Value = false;
         _numberOfJumps = 0;
     }
+
     private bool IsGrounded() => _characterController.isGrounded;
 }
 
 [System.Serializable]
-public struct Movement{
-
+public struct Movement
+{
     [HideInInspector] public bool isRightClicking;
     [HideInInspector] public bool isSprinting;
     [HideInInspector] public float currentSpeed;
     public float speed;
     public float multiplier;
     public float acceleration;
-
-
-     
 }

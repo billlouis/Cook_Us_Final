@@ -1,12 +1,25 @@
 using System.Collections;
 using UnityEngine;
-
-public class MeleeAttack : MonoBehaviour
+using Unity.Netcode;
+public class MeleeAttack : NetworkBehaviour
 {
     public Animator animator; // Reference to the Animator for the attack animation
     public Collider fryingPanCollider; // Collider for detecting hits
     public int damage = 10; // Amount of damage dealt
-
+    private NetworkVariable<bool> isHitting = new NetworkVariable<bool>(
+        false,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Owner // Ensure the server updates this
+    );
+    public override void OnNetworkSpawn()
+    {
+        // Subscribe to walking state changes for all clients
+        isHitting.OnValueChanged += OnHittingStateChanged;
+    }
+    private void OnHittingStateChanged(bool previous, bool current)
+    {
+        animator.SetBool("isHitting", current);
+    }
     void Start()
     {
         // Disable collider by default so it only triggers during the attack
@@ -15,7 +28,9 @@ public class MeleeAttack : MonoBehaviour
 
     public void Attack()
     {
-        animator.SetBool("isHitting", true); // Set attacking state to true
+        if(!IsOwner) return;
+        isHitting.Value = true;
+    
         StartCoroutine(EnableCollider());
     }
 
@@ -28,7 +43,7 @@ public class MeleeAttack : MonoBehaviour
 
         yield return new WaitForSeconds(1.0f); // Allow the attack animation to complete
 
-        animator.SetBool("isHitting", false); // Reset attacking state to return to walking/idle
+        isHitting.Value = false;
     }
 
 }
