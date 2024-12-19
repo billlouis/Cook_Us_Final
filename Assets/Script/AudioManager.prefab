@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5498332394104955852
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5498332394104955842}
+  - component: {fileID: 5498332394104955843}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5498332394104955842
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5498332394104955852}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.18971495, y: 0.11991816, z: 2.4039328}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5498332394104955843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5498332394104955852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6d1ce540de78c14a86126458325d3e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: enemyHit
+    clip: {fileID: 8300000, guid: c064ddff29db4384f88074a93b8c0958, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: enemyDeath
+    clip: {fileID: 8300000, guid: 80711a3fe815abc448f389a69e0a9e44, type: 3}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: drinkPotion
+    clip: {fileID: 8300000, guid: 8157376b01addec499b002558d9de49c, type: 3}
+    volume: 0.376
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: playerHurt
+    clip: {fileID: 8300000, guid: 9ce72cce7561d2e4da74010717faee20, type: 3}
+    volume: 0.376
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: playerDeath
+    clip: {fileID: 8300000, guid: 6a151a15ad447a247896adbc592476be, type: 3}
+    volume: 0.376
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+  - name: gameWin
+    clip: {fileID: 8300000, guid: aa38ee60fc7b9da4880aea32a14cb751, type: 3}
+    volume: 0.376
+    pitch: 1
+    source: {fileID: 0}
+    loop: 1
+  - name: themeSong
+    clip: {fileID: 8300000, guid: 8f4a13a4df1e38b4991bc3e7100f6fd1, type: 3}
+    volume: 0.376
+    pitch: 1
+    source: {fileID: 0}
+    loop: 1
