@@ -16,6 +16,6 @@ public class PlayerUI : MonoBehaviour
     // Update is called once per frame
     public void UpdateText(string promptMessage)
     {
-        promptText.text = promptMessage;
+        //promptText.text = promptMessage;
     }
 }
