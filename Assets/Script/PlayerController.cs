@@ -78,6 +78,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsOwner)
         {
+            healthBar.SetMaxHealth (maxHealth);
             hb.gameObject.SetActive(true);
             listener.enabled = true;
             vc.Priority = 1;
@@ -112,7 +113,10 @@ public class PlayerController : NetworkBehaviour
     }
     private void OnHealthChanged(int previousValue, int newValue)
     {
-        healthBar.SetHealth (currentHealth.Value);
+        Debug.Log("newVal" + newValue);
+        Debug.Log("prevVal:" + previousValue);
+        Debug.Log("hbv"+ healthBar.slider.value);
+        Debug.Log("currentHealth" + currentHealth);
         if (newValue <= 0)
         {
             HandleDeath();
@@ -138,6 +142,7 @@ public class PlayerController : NetworkBehaviour
             // Handle knockback first
             if (isBeingKnockedBack)
             {
+                healthBar.SetHealth (currentHealth.Value);
                 ApplyKnockback();
             }
             
@@ -243,7 +248,8 @@ public class PlayerController : NetworkBehaviour
     private void HandleDeathClientRpc()
     {
         // Visual feedback for death (e.g., play animation or disable object)
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
+        currentHealth.Value = 100;
     }
 
     [ServerRpc(RequireOwnership = false)]
