@@ -41,16 +41,38 @@ public class GameLobby : MonoBehaviour
     private float heartbeatTimer;
     private float listLobbiesTimer;
 
-
+    
     private void Awake()
     {
+        
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
-
         DontDestroyOnLoad(gameObject);
 
         InitializeUnityAuthentication();
+        NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
     }
-
+    private async void OnClientDisconnectCallback(ulong clientId)
+        {
+            // Handle player disconnection
+            if (joinedLobby != null)
+            {
+                try
+                {
+                    // Remove the disconnected player from the lobby
+                    await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
+                    Debug.Log($"Player {clientId} disconnected and removed from the lobby.");
+                }
+                catch (LobbyServiceException e)
+                {
+                    Debug.LogError($"Error while removing player from lobby: {e}");
+                }
+            }
+        }
     private async void InitializeUnityAuthentication()
     {
         if (UnityServices.State != ServicesInitializationState.Initialized)
