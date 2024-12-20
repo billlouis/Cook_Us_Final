@@ -10,7 +10,7 @@ public class PlayerLook : NetworkBehaviour
 
     [SerializeField] private float xSensitivity = 30f;
     [SerializeField] private float ySensitivity = 30f;
-
+    [SerializeField] private AudioListener listener;
     public override void OnNetworkSpawn()
     {
         if (!IsOwner)
@@ -21,6 +21,7 @@ public class PlayerLook : NetworkBehaviour
         }
         else
         {
+            listener.enabled = true;
             // Activate local player's camera and input
             cam.gameObject.SetActive(true);
             enabled = true;

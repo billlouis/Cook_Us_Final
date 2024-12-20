@@ -32,7 +32,7 @@ public class GameMultiplayer : NetworkBehaviour
     private NetworkList<PlayerData> playerDataNetworkList;
     private string playerName;
 
-
+    
 
     private void Awake()
     {
@@ -95,15 +95,16 @@ public class GameMultiplayer : NetworkBehaviour
     }
 
     private void NetworkManager_OnClientConnectedCallback(ulong clientId)
-    {
-        playerDataNetworkList.Add(new PlayerData
         {
-            clientId = clientId,
-            characterId = GetFirstUnusedCharacterId(),
-        });
-        SetPlayerNameServerRpc(GetPlayerName());
-        SetPlayerIdServerRpc(AuthenticationService.Instance.PlayerId);
-    }
+            Debug.Log($"Client connected: {clientId}");
+            playerDataNetworkList.Add(new PlayerData
+            {
+                clientId = clientId,
+                characterId = GetFirstUnusedCharacterId(),
+            });
+            SetPlayerNameServerRpc(GetPlayerName());
+            SetPlayerIdServerRpc(AuthenticationService.Instance.PlayerId);
+        }
 
     private void NetworkManager_ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest connectionApprovalRequest, NetworkManager.ConnectionApprovalResponse connectionApprovalResponse)
     {
@@ -164,84 +165,10 @@ public class GameMultiplayer : NetworkBehaviour
     }
 
     private void NetworkManager_Client_OnClientDisconnectCallback(ulong clientId)
-    {
-        OnFailedToJoinGame?.Invoke(this, EventArgs.Empty);
-    }
-
-    //public void SpawnKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
-    //{
-    //    SpawnKitchenObjectServerRpc(GetKitchenObjectSOIndex(kitchenObjectSO), kitchenObjectParent.GetNetworkObject());
-    //}
-
-    //[ServerRpc(RequireOwnership = false)]
-    //private void SpawnKitchenObjectServerRpc(int kitchenObjectSOIndex, NetworkObjectReference kitchenObjectParentNetworkObjectReference)
-    //{
-    //    KitchenObjectSO kitchenObjectSO = GetKitchenObjectSOFromIndex(kitchenObjectSOIndex);
-
-    //    kitchenObjectParentNetworkObjectReference.TryGet(out NetworkObject kitchenObjectParentNetworkObject);
-    //    IKitchenObjectParent kitchenObjectParent = kitchenObjectParentNetworkObject.GetComponent<IKitchenObjectParent>();
-
-    //    if (kitchenObjectParent.HasKitchenObject())
-    //    {
-    //        // Parent already spawned an object
-    //        return;
-    //    }
-
-    //    Transform kitchenObjectTransform = Instantiate(kitchenObjectSO.prefab);
-
-    //    NetworkObject kitchenObjectNetworkObject = kitchenObjectTransform.GetComponent<NetworkObject>();
-    //    kitchenObjectNetworkObject.Spawn(true);
-
-    //    KitchenObject kitchenObject = kitchenObjectTransform.GetComponent<KitchenObject>();
-
-
-    //    kitchenObject.SetKitchenObjectParent(kitchenObjectParent);
-    //}
-
-    //public int GetKitchenObjectSOIndex(KitchenObjectSO kitchenObjectSO)
-    //{
-    //    return kitchenObjectListSO.kitchenObjectSOList.IndexOf(kitchenObjectSO);
-    //}
-
-    //public KitchenObjectSO GetKitchenObjectSOFromIndex(int kitchenObjectSOIndex)
-    //{
-    //    return kitchenObjectListSO.kitchenObjectSOList[kitchenObjectSOIndex];
-    //}
-
-
-
-    //public void DestroyKitchenObject(KitchenObject kitchenObject)
-    //{
-    //    DestroyKitchenObjectServerRpc(kitchenObject.NetworkObject);
-    //}
-
-    //[ServerRpc(RequireOwnership = false)]
-    //private void DestroyKitchenObjectServerRpc(NetworkObjectReference kitchenObjectNetworkObjectReference)
-    //{
-    //    kitchenObjectNetworkObjectReference.TryGet(out NetworkObject kitchenObjectNetworkObject);
-
-    //    if (kitchenObjectNetworkObject == null)
-    //    {
-    //        // This object is already destroyed
-    //        return;
-    //    }
-
-    //    KitchenObject kitchenObject = kitchenObjectNetworkObject.GetComponent<KitchenObject>();
-
-    //    ClearKitchenObjectOnParentClientRpc(kitchenObjectNetworkObjectReference);
-
-    //    kitchenObject.DestroySelf();
-    //}
-
-    //[ClientRpc]
-    //private void ClearKitchenObjectOnParentClientRpc(NetworkObjectReference kitchenObjectNetworkObjectReference)
-    //{
-    //    kitchenObjectNetworkObjectReference.TryGet(out NetworkObject kitchenObjectNetworkObject);
-    //    KitchenObject kitchenObject = kitchenObjectNetworkObject.GetComponent<KitchenObject>();
-
-    //    kitchenObject.ClearKitchenObjectOnParent();
-    //}
-
+{
+    Debug.Log($"Client disconnected: {clientId}");
+    OnFailedToJoinGame?.Invoke(this, EventArgs.Empty);
+}
 
 
     public bool IsPlayerIndexConnected(int playerIndex)

@@ -4,10 +4,22 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
 using Cinemachine;
+using System;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : NetworkBehaviour 
 {
+
+    
+    [SerializeField] private int maxHealth = 100;
+    public HealthBarScript healthBar;
+    public GameObject hb;
+    float mass = 2.0F;
+    public NetworkVariable<int> currentHealth = new NetworkVariable<int>(100, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private float knockbackDuration = 0.3f; // How long the knockback lasts
+    private float currentKnockbackTime = 0f;
+    private Vector3 currentKnockbackVelocity = Vector3.zero;
+    private bool isBeingKnockedBack = false;
     #region Variables : Movement
     private Vector2 _input;
     private CharacterController _characterController;
@@ -48,6 +60,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private GameObject cheeseNetworkPrefab;
 
     private NetworkVariable<bool> hasCheese = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    
     #endregion
 
     #region Variables : Animation
@@ -65,22 +78,50 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsOwner)
         {
+            healthBar.SetMaxHealth (maxHealth);
+            hb.gameObject.SetActive(true);
             listener.enabled = true;
             vc.Priority = 1;
             _mainCamera.gameObject.SetActive(true);
         }
         else
-        {
+        {   
+            hb.gameObject.SetActive(false);
             vc.Priority = 0;
             _mainCamera.gameObject.SetActive(false);
         }
-
+        if (IsServer)
+        {
+            currentHealth.OnValueChanged += OnHealthChanged;
+        }
         // Subscribe to the network variable changes for animation sync
         isWalking.OnValueChanged += OnWalkingStateChanged;
         isRunning.OnValueChanged += OnRunningStateChanged;
         isJumping.OnValueChanged += OnJumpingStateChanged;
-    }
 
+        hasCheese.OnValueChanged += (previous, current) => {
+            if (current) AttachCheese();
+            else DetachCheese();
+        };
+    }
+    public override void OnNetworkDespawn()
+    {
+        if (IsServer)
+        {
+            currentHealth.OnValueChanged -= OnHealthChanged;
+        }
+    }
+    private void OnHealthChanged(int previousValue, int newValue)
+    {
+        Debug.Log("newVal" + newValue);
+        Debug.Log("prevVal:" + previousValue);
+        Debug.Log("hbv"+ healthBar.slider.value);
+        Debug.Log("currentHealth" + currentHealth);
+        if (newValue <= 0)
+        {
+            HandleDeath();
+        }
+    }
     private void Start()
     {
         _characterController = GetComponent<CharacterController>();
@@ -97,12 +138,47 @@ public class PlayerController : NetworkBehaviour
         {
             ApplyRotation();
             ApplyGravity();
-            ApplyMovement();
+            
+            // Handle knockback first
+            if (isBeingKnockedBack)
+            {
+                healthBar.SetHealth (currentHealth.Value);
+                ApplyKnockback();
+            }
+            
+            // Only apply normal movement if not being knocked back
+            if (!isBeingKnockedBack)
+            {
+                ApplyMovement();
+            }
+            
             HandleCameraRotation();
             ApplyAnimationStates();
         }
     }
-
+    private void ApplyKnockback()
+    {
+        if (currentKnockbackTime < knockbackDuration)
+        {
+            // Calculate how far through the knockback we are (0 to 1)
+            float knockbackProgress = currentKnockbackTime / knockbackDuration;
+            
+            // Smoothly reduce the knockback force over time
+            Vector3 knockbackMove = Vector3.Lerp(currentKnockbackVelocity, Vector3.zero, knockbackProgress);
+            
+            // Apply the movement
+            _characterController.Move(knockbackMove * Time.deltaTime);
+            
+            currentKnockbackTime += Time.deltaTime;
+        }
+        else
+        {
+            // Reset knockback state
+            isBeingKnockedBack = false;
+            currentKnockbackTime = 0f;
+            currentKnockbackVelocity = Vector3.zero;
+        }
+    }
     private void ApplyAnimationStates()
     {
         if (isMoving)
@@ -134,11 +210,59 @@ public class PlayerController : NetworkBehaviour
     {
         animator.SetBool("isJumping", current);
     }
+    public void TakeDamage(int damage, Vector3 dir, float force)
+    {
+        
+        if (IsServer)
+        {
+            
+            currentHealth.Value -= damage;
+            
+            
+            // Calculate knockback velocity
+            dir.Normalize();
+            Vector3 knockbackVel = dir * force;
+            
+            // Notify clients to apply knockback
+            ApplyKnockbackClientRpc(knockbackVel);
+        }
+    }
+    [ClientRpc]
+    private void ApplyKnockbackClientRpc(Vector3 knockbackVel)
+    {
+        // Start knockback on all clients
+        currentKnockbackVelocity = knockbackVel;
+        currentKnockbackTime = 0f;
+        isBeingKnockedBack = true;
+    }
+    private void HandleDeath()
+    {
+        // Handle player death (e.g., respawn or end game logic)
+        Debug.Log($"{gameObject.name} has died!");
 
+        // Notify all clients of the death
+        HandleDeathClientRpc();
+    }
+
+    [ClientRpc]
+    private void HandleDeathClientRpc()
+    {
+        // Visual feedback for death (e.g., play animation or disable object)
+        //gameObject.SetActive(false);
+        currentHealth.Value = 100;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ApplyKnockbackServerRpc(int damage, Vector3 knockbackDirection, float knockbackForce)
+    {
+        // Only the server can handle this call, even if the owner is not the client
+        TakeDamage(damage, knockbackDirection, knockbackForce);
+    }
     public void CollectCheese()
     {
         if (IsServer && !hasCheese.Value)
         {
+            Debug.Log("Collect Cheese");
             // Set cheese ownership on the server
             hasCheese.Value = true;
         }
@@ -217,6 +341,7 @@ public class PlayerController : NetworkBehaviour
     private void ApplyMovement()
     {
         var targetSpeed = movement.isSprinting ? movement.speed * movement.multiplier : movement.speed;
+        
         movement.currentSpeed = Mathf.MoveTowards(movement.currentSpeed, targetSpeed, movement.acceleration * Time.deltaTime);
         _characterController.Move(_direction * movement.currentSpeed * Time.deltaTime);
     }

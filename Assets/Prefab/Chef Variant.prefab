@@ -92,7 +92,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 711776939086347140}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!1 &7885515694289192115
 GameObject:
   m_ObjectHideFlags: 0
@@ -935,6 +935,7 @@ MonoBehaviour:
   cam: {fileID: 4474013776122352589}
   xSensitivity: 30
   ySensitivity: 30
+  listener: {fileID: 7837365073886775820}
 --- !u!114 &8009787372619493283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1154,6 +1155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
+  knockbackForce: 3
 --- !u!65 &7230472123913792354
 BoxCollider:
   m_ObjectHideFlags: 0
