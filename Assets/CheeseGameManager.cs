@@ -6,9 +6,9 @@ public class CheeseGameManager : NetworkBehaviour
 {
     public static CheeseGameManager Instance { get; private set; }
 
-    private NetworkVariable<int> cheeseCollectedCount = new NetworkVariable<int>(0);
-    [SerializeField] private int requiredCheese = 5;
-    public string nextSceneName = "NextScene";
+    public NetworkVariable<int> cheeseCollectedCount = new NetworkVariable<int>(0);
+    [SerializeField] public int requiredCheese = 7;
+   // public string nextSceneName = "NextScene";
 
     private void Awake()
     {
@@ -30,8 +30,10 @@ public class CheeseGameManager : NetworkBehaviour
         // Check if the required cheese has been collected
         if (cheeseCollectedCount.Value >= requiredCheese)
         {
+            Debug.Log("You Win");
+            cheeseCollectedCount.Value = 0;
             // Load the next scene for all clients
-            NetworkManager.Singleton.SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
+            //NetworkManager.Singleton.SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
         }
     }
 

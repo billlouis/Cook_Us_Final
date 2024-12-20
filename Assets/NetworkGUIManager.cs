@@ -10,20 +10,24 @@ using UnityEngine.SceneManagement;
 public class NetworkGUIManager : MonoBehaviour
 {
     public static NetworkGUIManager Instance;
-    [SerializeField] private Text progressText;
+
+    [SerializeField] private TextMeshProUGUI progressText;
+
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject); // Optional: Persist this manager across scenes
         }
         else
         {
             Destroy(gameObject); // Prevent duplicate instances
         }
-      
     }
-    public void UpdateProgressText(string texts){
+
+    public void UpdateProgressText(string texts)
+    {
         progressText.text = texts;
     }
 }

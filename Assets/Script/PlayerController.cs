@@ -79,6 +79,11 @@ public class PlayerController : NetworkBehaviour
         isWalking.OnValueChanged += OnWalkingStateChanged;
         isRunning.OnValueChanged += OnRunningStateChanged;
         isJumping.OnValueChanged += OnJumpingStateChanged;
+
+        hasCheese.OnValueChanged += (previous, current) => {
+            if (current) AttachCheese();
+            else DetachCheese();
+        };
     }
 
     private void Start()
@@ -139,6 +144,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsServer && !hasCheese.Value)
         {
+            Debug.Log("Collect Cheese");
             // Set cheese ownership on the server
             hasCheese.Value = true;
         }

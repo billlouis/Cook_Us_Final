@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: -3634737857850533348}
   m_Layer: 0
   m_Name: Cheese
-  m_TagString: Untagged
+  m_TagString: Cheese
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2139176877
+  GlobalObjectIdHash: 522957194
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -142,6 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 323af9e8a32c2d646bbb286e29dd8deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isCollected: 0
 --- !u!54 &1724636446966631019
 Rigidbody:
   m_ObjectHideFlags: 0
