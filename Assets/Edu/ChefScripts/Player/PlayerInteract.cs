@@ -1,21 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class PlayerInteract : MonoBehaviour
+public class PlayerInteract : NetworkBehaviour
 {
     private Camera cam;
-    [SerializeField]
-    private float distance = 3f;
-    [SerializeField]
-    private LayerMask mask;
+    [SerializeField] private float distance = 3f;
+    [SerializeField] private LayerMask mask;
     private PlayerUI playerUI;
     private InputManager inputManager;
 
-    public Transform pickupPosition;
+    [SerializeField] private Transform pickupPoint; // Reference to where vegetables should be held
+    private GameObject heldVegetable;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         cam = GetComponent<PlayerLook>().cam;
@@ -23,24 +19,77 @@ public class PlayerInteract : MonoBehaviour
         inputManager = GetComponent<InputManager>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        playerUI.UpdateText(string.Empty);
-        // create ray that will shoot forward from the center of the camera
-        Ray ray = new Ray(cam.transform.position, cam.transform.forward);
-        Debug.DrawRay(ray.origin, ray.direction * distance);
-        RaycastHit hitInfo;
-        if (Physics.Raycast(ray, out hitInfo, distance, mask)){
+        if (!IsOwner) return;
 
-            if(hitInfo.collider.GetComponent<Interactable>() != null){
-                Interactable interactable = hitInfo.collider.GetComponent<Interactable>();
-                playerUI.UpdateText(interactable.promptMessage);
-                if (inputManager.onFoot.Interact.triggered){
-                    interactable.BaseInteract();
+        playerUI.UpdateText(string.Empty);
+
+        if (heldVegetable == null)
+        {
+            // Raycast to find interactable vegetables
+            Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+            Debug.DrawRay(ray.origin, ray.direction * distance, Color.red);
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, distance, mask))
+            {
+                if (hitInfo.collider.TryGetComponent<Vegetable>(out var vegetable) && vegetable.CanBePickedUp())
+                {
+                    playerUI.UpdateText("Press E to Pick Up");
+
+                    if (inputManager.onFoot.Interact.triggered)
+                    {
+                        PickUpVegetableServerRpc(vegetable.NetworkObjectId);
+                    }
                 }
             }
+        }
+        else
+        {
+            // If holding a vegetable, allow dropping it
+            playerUI.UpdateText("Press E to Drop");
 
+            if (inputManager.onFoot.Interact.triggered)
+            {
+                DropVegetableServerRpc(heldVegetable.GetComponent<NetworkObject>().NetworkObjectId);
+            }
         }
     }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PickUpVegetableServerRpc(ulong vegetableId)
+    {
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(vegetableId, out NetworkObject vegetableNetObj))
+        {
+            if (vegetableNetObj.TryGetComponent<Vegetable>(out var vegetable))
+            {
+                if (vegetable.CanBePickedUp())
+                {
+                    vegetable.OnPickedUp(pickupPoint); // Server handles pickup logic
+                    heldVegetable = vegetable.gameObject;
+
+                    Debug.Log($"Picked up vegetable: {vegetable.name}");
+                }
+            }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void DropVegetableServerRpc(ulong vegetableId)
+    {
+        if (heldVegetable == null) return;
+
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(vegetableId, out NetworkObject vegetableNetObj))
+        {
+            if (vegetableNetObj.TryGetComponent<Vegetable>(out var vegetable))
+            {
+                vegetable.OnDropped(); // Server handles drop logic
+                heldVegetable = null; // Clear the held vegetable reference
+
+                Debug.Log($"Dropped vegetable: {vegetable.name}");
+            }
+        }
+    }
+
+
 }
