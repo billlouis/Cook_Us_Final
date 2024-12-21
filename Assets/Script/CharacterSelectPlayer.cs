@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class CharacterSelectPlayer : MonoBehaviour
@@ -10,15 +11,17 @@ public class CharacterSelectPlayer : MonoBehaviour
 
 
     [SerializeField] private int playerIndex;
-    [SerializeField] private GameObject readyGameObject;
-    [SerializeField] private PlayerVisual playerVisual;
+    //[SerializeField] private PlayerVisual playerVisual;
     [SerializeField] private Button kickButton;
     [SerializeField] private TextMeshProUGUI playerNameText;
+    [SerializeField] private TextMeshProUGUI readyNameText;
+    [SerializeField] private Image characterIconImage;
 
 
     private void Awake()
     {
-        kickButton.onClick.AddListener(() => {
+        kickButton.onClick.AddListener(() =>
+        {
             PlayerData playerData = GameMultiplayer.Instance.GetPlayerDataFromPlayerIndex(playerIndex);
             GameLobby.Instance.KickPlayer(playerData.playerId.ToString());
             GameMultiplayer.Instance.KickPlayer(playerData.clientId);
@@ -31,7 +34,7 @@ public class CharacterSelectPlayer : MonoBehaviour
         CharacterSelectReady.Instance.OnReadyChanged += CharacterSelectReady_OnReadyChanged;
 
         kickButton.gameObject.SetActive(NetworkManager.Singleton.IsServer);
-        if(playerIndex == 0)
+        if (playerIndex == 0)
         {
             kickButton.gameObject.SetActive(false);
         }
@@ -57,9 +60,11 @@ public class CharacterSelectPlayer : MonoBehaviour
 
             PlayerData playerData = GameMultiplayer.Instance.GetPlayerDataFromPlayerIndex(playerIndex);
 
-            readyGameObject.SetActive(CharacterSelectReady.Instance.IsPlayerReady(playerData.clientId));
+            readyNameText.text = CharacterSelectReady.Instance.IsPlayerReady(playerData.clientId) ? "Ready" : "Not Ready";
 
             playerNameText.text = playerData.playerName.ToString();
+
+            characterIconImage.sprite = GameMultiplayer.Instance.GetPlayerCharacter(playerData.characterId);
 
             //playerVisual.SetPlayerCharacter(GameMultiplayer.Instance.GetPlayerCharacter(playerData.characterId));
         }

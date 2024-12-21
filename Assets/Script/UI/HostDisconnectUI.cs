@@ -13,6 +13,7 @@ public class HostDisconnectUI : MonoBehaviour
 
     private void Awake()
     {
+        Debug.Log(NetworkManager.Singleton.LocalClient.ClientId);
         playAgainButton.onClick.AddListener(() => {
             Loader.Load(Loader.Scene.MainMenuScene);
         });
@@ -27,6 +28,10 @@ public class HostDisconnectUI : MonoBehaviour
 
     private void NetworkManager_OnClientDisconnectCallback(ulong clientId)
     {
+        if (clientId == NetworkManager.Singleton.LocalClientId)
+        {
+            Show();
+        }
         if (clientId == NetworkManager.ServerClientId)
         {
             // Server is shutting down
@@ -36,6 +41,7 @@ public class HostDisconnectUI : MonoBehaviour
 
     private void Show()
     {
+        Debug.Log("bye");
         gameObject.SetActive(true);
     }
 

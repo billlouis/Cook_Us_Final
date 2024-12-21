@@ -11,9 +11,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Button playButton;
     [SerializeField] private Button quitButton;
 
-    public void logthisshit(){
-        Debug.Log("thisshit");
-    }
+
     private void Awake()
     {
         playButton.onClick.AddListener(() => {

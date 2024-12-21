@@ -10,7 +10,7 @@ public class GameMultiplayer : NetworkBehaviour
 {
 
 
-    public const int MAX_PLAYER_AMOUNT = 4;
+    public const int MAX_PLAYER_AMOUNT = 6;
     private const string PLAYER_PREFS_PLAYER_NAME_MULTIPLAYER = "PlayerNameMultiplayer";
 
 
@@ -26,7 +26,7 @@ public class GameMultiplayer : NetworkBehaviour
 
 
     //[SerializeField] private KitchenObjectListSO kitchenObjectListSO;
-    [SerializeField] private List<string> playerCharacterList;
+    [SerializeField] private List<Sprite> playerCharacterList;
 
 
     private NetworkList<PlayerData> playerDataNetworkList;
@@ -135,6 +135,7 @@ public class GameMultiplayer : NetworkBehaviour
 
     private void NetworkManager_Client_OnClientConnectedCallback(ulong clientId)
     {
+        Debug.Log($"Client connected: {clientId}");
         SetPlayerNameServerRpc(GetPlayerName());
         SetPlayerIdServerRpc(AuthenticationService.Instance.PlayerId);
     }
@@ -283,7 +284,7 @@ public class GameMultiplayer : NetworkBehaviour
         return playerDataNetworkList[playerIndex];
     }
 
-    public string GetPlayerCharacter(int characterId)
+    public Sprite GetPlayerCharacter(int characterId)
     {
         
         return playerCharacterList[characterId];
