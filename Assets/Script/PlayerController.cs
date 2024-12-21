@@ -240,25 +240,34 @@ public class PlayerController : NetworkBehaviour
     }
     private void HandleDeath()
     {
-        // Handle player death (e.g., respawn or end game logic)
-        Debug.Log($"{gameObject.name} has died!");
+        if (IsServer)
+        {
+            // Drop cheese if player has it when dying
+            if (hasCheese.Value)
+            {
+                DropCheese(false);
+            }
 
-        // Notify all clients of the death
-        HandleDeathClientRpc();
+            // Handle player death (e.g., respawn or end game logic)
+            Debug.Log($"{gameObject.name} has died!");
+
+            // Notify all clients of the death
+            HandleDeathClientRpc();
+        }
     }
 
     [ClientRpc]
-    private void HandleDeathClientRpc()
+private void HandleDeathClientRpc()
+{
+    // Find the vegetable associated with the health change
+    if (TryGetComponent<Vegetable>(out var vegetable))
     {
-        // Find the vegetable associated with the health change
-        if (TryGetComponent<Vegetable>(out var vegetable))
-        {
-            vegetable.Paralyze(); // Call the paralyze method on the vegetable
-        }
-
-        // Visual feedback for death can go here (e.g., play animation)
-        Debug.Log($"{gameObject.name} is now paralyzed and can be picked up.");
+        vegetable.Paralyze(); // Call the paralyze method on the vegetable
     }
+
+    // Visual feedback for death can go here (e.g., play animation)
+    Debug.Log($"{gameObject.name} is now paralyzed and can be picked up.");
+}
 
 
     [ServerRpc(RequireOwnership = false)]
@@ -277,13 +286,13 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    public void DropCheese()
+    public void DropCheese(bool rat)
     {
         if (IsServer && hasCheese.Value)
         {
             // Update cheese ownership on the server
             hasCheese.Value = false;
-
+            if(!rat){
             // Spawn and throw cheese networked object
             GameObject networkCheese = Instantiate(cheeseNetworkPrefab, cheeseAttachPoint.position, Quaternion.identity);
             NetworkObject networkObject = networkCheese.GetComponent<NetworkObject>();
@@ -295,7 +304,7 @@ public class PlayerController : NetworkBehaviour
             {
                 Vector3 throwForce = (transform.forward + Vector3.up) * 1.5f;
                 rb.AddForce(throwForce, ForceMode.Impulse);
-            }
+            }}
         }
     }
 

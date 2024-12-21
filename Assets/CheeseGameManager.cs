@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Unity.Netcode;
+using System.Linq;
 
 public class CheeseGameManager : NetworkBehaviour
 {
@@ -8,7 +9,7 @@ public class CheeseGameManager : NetworkBehaviour
 
     public NetworkVariable<int> cheeseCollectedCount = new NetworkVariable<int>(0);
     [SerializeField] public int requiredCheese = 7;
-   // public string nextSceneName = "NextScene";
+    [SerializeField] private Loader.Scene nextScene = Loader.Scene.IngredientsWinScene;
 
     private void Awake()
     {
@@ -32,9 +33,29 @@ public class CheeseGameManager : NetworkBehaviour
         {
             Debug.Log("You Win");
             cheeseCollectedCount.Value = 0;
-            // Load the next scene for all clients
-            //NetworkManager.Singleton.SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
+            CleanupAndLoadWinSceneClientRpc();
         }
+    }
+
+    [ClientRpc]
+    private void CleanupAndLoadWinSceneClientRpc()
+    {
+        GameObject networkSceneUI = GameObject.Find("NetworkSceneUI");
+        if (networkSceneUI != null)
+        {
+            Destroy(networkSceneUI);
+        }
+        // Create a list of objects to despawn
+        var objectsToDespawn = NetworkManager.Singleton.SpawnManager.SpawnedObjects.Values.ToList();
+        
+        // Despawn each object
+        foreach (NetworkObject networkObject in objectsToDespawn)
+        {
+            networkObject.Despawn();
+        }
+
+        // Load the win scene
+        Loader.LoadNetwork(nextScene);
     }
 
     public int GetCurrentCheeseCount()

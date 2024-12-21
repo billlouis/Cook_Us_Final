@@ -13,7 +13,7 @@ public class DropZone : NetworkBehaviour
         {
             Debug.Log("hascheese");
             // Player drops cheese in the zone
-            player.DropCheese();
+            player.DropCheese(true);
             CheeseGameManager.Instance.AddCheeseCountServerRpc();
 
             // Notify all clients of the new progress

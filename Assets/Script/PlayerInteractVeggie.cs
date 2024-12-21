@@ -41,6 +41,12 @@ public class PlayerInteractVeggie : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;
+        if(isHolding){
+            if(pc.HasCheese()){
+                pc.DropCheese(false);
+            }
+        }
+            
             Ray ray = new Ray(cam.transform.position, cam.transform.forward);
             Debug.DrawRay(ray.origin, ray.direction * distance, Color.red);
             if (Physics.Raycast(ray, out RaycastHit hitInfo, distance, mask))

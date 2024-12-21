@@ -20,4 +20,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: 85e273c8b4e5a864cbe335ec4a893a6e
+  - enabled: 1
+    path: Assets/Scenes/ChefWinScene.unity
+    guid: 91499453e8da18246b749eac1f94b76e
+  - enabled: 1
+    path: Assets/Scenes/IngredientsWinScene.unity
+    guid: ecaf8bdf9ade14f42a0a420d0fa42a86
   m_configObjects: {}

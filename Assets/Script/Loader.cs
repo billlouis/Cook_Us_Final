@@ -15,6 +15,8 @@ public static class Loader
         CharacterSelectScene,
         LoadingScene,
         GameScene,
+        ChefWinScene,
+        IngredientsWinScene
     }
 
 

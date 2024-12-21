@@ -1,11 +1,13 @@
 using Unity.Netcode;
 using UnityEngine;
+using System.Linq;
 
 public class MultiplayerGameManager : NetworkBehaviour
 {
-    [SerializeField] private float gameDuration = 300f; // 5 minutes
+    [SerializeField] private float gameDuration = 300f;
     private NetworkVariable<float> timeRemaining = new NetworkVariable<float>();
-
+    [SerializeField] private Loader.Scene nextScene = Loader.Scene.GameScene;
+    
     [SerializeField] public TMPro.TextMeshProUGUI timerText;
 
     private void Start()
@@ -41,7 +43,31 @@ public class MultiplayerGameManager : NetworkBehaviour
 
     private void EndGame()
     {
-        // Handle game end logic here
-        Debug.Log("Time's up! Determine the winner.");
+        if (IsServer)
+        {
+            Debug.Log("Time's up! Cleaning up and loading results...");
+            CleanupAndLoadResultsClientRpc();
+        }
+    }
+
+    [ClientRpc]
+    private void CleanupAndLoadResultsClientRpc()
+    {
+        GameObject networkSceneUI = GameObject.Find("NetworkSceneUI");
+        if (networkSceneUI != null)
+        {
+            Destroy(networkSceneUI);
+        }
+        // Create a list of objects to despawn
+        var objectsToDespawn = NetworkManager.Singleton.SpawnManager.SpawnedObjects.Values.ToList();
+        
+        // Despawn each object
+        foreach (NetworkObject networkObject in objectsToDespawn)
+        {
+            networkObject.Despawn();
+        }
+
+        // Load the UI scene
+        Loader.LoadNetwork(nextScene);
     }
 }
