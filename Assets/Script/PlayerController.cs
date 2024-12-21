@@ -113,10 +113,7 @@ public class PlayerController : NetworkBehaviour
     }
     private void OnHealthChanged(int previousValue, int newValue)
     {
-        Debug.Log("newVal" + newValue);
-        Debug.Log("prevVal:" + previousValue);
-        Debug.Log("hbv"+ healthBar.slider.value);
-        Debug.Log("currentHealth" + currentHealth);
+        
         if (newValue <= 0)
         {
             HandleDeath();
