@@ -4,47 +4,50 @@ using Unity.Netcode;
 public class Vegetable : NetworkBehaviour
 {
     public float maxHealth = 100f;
-    private float health;
-    public NetworkVariable<bool> isParalyzed = new NetworkVariable<bool>(false);
-    private NetworkVariable<bool> isBeingHeld = new NetworkVariable<bool>(false);
+    private NetworkVariable<float> health = new NetworkVariable<float>();
+    public NetworkVariable<bool> isParalyzed = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<bool> isBeingHeld = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    private NetworkVariable<bool> isInPan = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private Collider vegetableCollider;
-    private Transform followTransform; // The point the vegetable should follow when picked up.
+    private Transform followTransform;
+    private CharacterController characterController;
     private PlayerController pc;
-    private void Start()
-    {
-        health = maxHealth;
+
+    private void Start(){
+        health.Value = maxHealth;
         vegetableCollider = GetComponent<Collider>();
         pc = GetComponent<PlayerController>();
     }
 
-    public bool CanBePickedUp()
+    public override void OnNetworkSpawn()
     {
-        return isParalyzed.Value && !isBeingHeld.Value;
+        // if (IsServer)
+        // {
+        //     health.Value = maxHealth;
+        // }
+
+        isBeingHeld.OnValueChanged += OnBeingHeldChanged;
+        isParalyzed.OnValueChanged += OnParalyzedChanged;
+        isInPan.OnValueChanged += OnInPanChanged;
+
+        // vegetableCollider = GetComponent<Collider>();
+        characterController = GetComponent<CharacterController>();
     }
 
-    public void OnPickedUp(Transform pickupPoint)
+    public override void OnNetworkDespawn()
     {
-        if (!IsServer) return;
-
-        isBeingHeld.Value = true;
-        followTransform = pickupPoint;
-
-        // Disable collider for proper pickup handling
-        if (vegetableCollider != null)
-        {
-            vegetableCollider.enabled = false; // Disable collider to prevent collision with the player
-        }
-
-        Debug.Log($"{gameObject.name} picked up by server.");
+        base.OnNetworkDespawn();
+        isBeingHeld.OnValueChanged -= OnBeingHeldChanged;
+        isParalyzed.OnValueChanged -= OnParalyzedChanged;
+        isInPan.OnValueChanged -= OnInPanChanged;
     }
+
     public void Revive()
     {
         if (!IsServer) return;
-
         // Reset the vegetable's state
         isParalyzed.Value = false;
         pc.currentHealth.Value = 10;
-
         // Reset appearance
         if (TryGetComponent<Renderer>(out var renderer))
         {
@@ -74,20 +77,133 @@ public class Vegetable : NetworkBehaviour
             }
         }
     }
+
+    private void OnBeingHeldChanged(bool previousValue, bool newValue)
+    {
+        if (vegetableCollider != null)
+        {
+            vegetableCollider.enabled = !newValue;
+        }
+
+        if (characterController != null)
+        {
+            characterController.enabled = !newValue;
+        }
+
+        UpdateVisualState();
+    }
+
+    private void OnParalyzedChanged(bool previousValue, bool newValue)
+    {
+        UpdateVisualState();
+    }
+
+    private void OnInPanChanged(bool previousValue, bool newValue)
+    {
+        UpdateVisualState();
+    }
+
+    private void UpdateVisualState()
+    {
+        if (TryGetComponent<Renderer>(out var renderer))
+        {
+            if (isParalyzed.Value)
+            {
+                renderer.material.color = Color.gray;
+            }
+            else if (isBeingHeld.Value)
+            {
+                renderer.material.color = Color.yellow;
+            }
+            else if (isInPan.Value)
+            {
+                renderer.material.color = Color.red;
+            }
+            else
+            {
+                renderer.material.color = Color.white;
+            }
+        }
+    }
+
+    public bool CanBePickedUp()
+    {
+        return isParalyzed.Value && !isBeingHeld.Value && !isInPan.Value;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (!IsServer) return;
+        
+        health.Value -= damage;
+        if (health.Value <= 0 && !isParalyzed.Value)
+        {
+            Paralyze();
+        }
+    }
+
+    public void OnPickedUp(Transform pickupPoint)
+    {
+        if (!IsServer) return;
+
+        isBeingHeld.Value = true;
+        isInPan.Value = false;
+        followTransform = pickupPoint;
+
+        if (vegetableCollider != null)
+        {
+            vegetableCollider.enabled = false;
+        }
+
+        if (characterController != null)
+        {
+            characterController.enabled = false;
+        }
+
+        SyncPickupClientRpc();
+        Debug.Log($"{gameObject.name} picked up by server.");
+    }
+
     public void OnDropped()
     {
         if (!IsServer) return;
 
-        isBeingHeld.Value = false;
-        followTransform = null;
+        // vegetableCollider.enabled = true;
+        ResetState();
+        SyncDropClientRpc();
+        Debug.Log($"{gameObject.name} dropped by server.");
+    }
 
-        // Re-enable collider
+    public void OnPlacedInPan(Vector3 panPosition, Quaternion panRotation)
+    {
+        if (!IsServer) return;
+
+        transform.position = panPosition;
+        transform.rotation = panRotation;
+
+        ResetState();
+
+        SyncPanPlacementClientRpc(panPosition, panRotation);
+        Debug.Log($"{gameObject.name} placed in pan and reset to default state.");
+    }
+
+    private void ResetState()
+    {
+        isBeingHeld.Value = false;
+        isInPan.Value = false;
+        isParalyzed.Value = false;
+        followTransform = null;
+        health.Value = maxHealth;
+
         if (vegetableCollider != null)
         {
             vegetableCollider.enabled = true;
         }
 
-        Debug.Log($"{gameObject.name} dropped by server.");
+        if (characterController != null)
+        {
+            characterController.enabled = true;
+        }
     }
 
     public void Paralyze()
@@ -95,14 +211,19 @@ public class Vegetable : NetworkBehaviour
         if (!IsServer) return;
 
         isParalyzed.Value = true;
-
-        // Change appearance to indicate paralysis
-        if (TryGetComponent<Renderer>(out var renderer))
-        {
-            renderer.material.color = Color.gray;
-        }
-
+        ParalyzeClientRpc();
         Debug.Log($"{gameObject.name} is paralyzed and can now be picked up.");
+    }
+
+    [ClientRpc]
+    private void ParalyzeClientRpc()
+    {
+        if (IsServer) return;
+
+        if (characterController != null)
+        {
+            characterController.enabled = false;
+        }
     }
 
     [ClientRpc]
@@ -114,6 +235,11 @@ public class Vegetable : NetworkBehaviour
         {
             vegetableCollider.enabled = false;
         }
+
+        if (characterController != null)
+        {
+            characterController.enabled = false;
+        }
     }
 
     [ClientRpc]
@@ -121,38 +247,48 @@ public class Vegetable : NetworkBehaviour
     {
         if (IsServer) return;
 
-        // Reset held state and detach from player
-        isBeingHeld.Value = false;
-        followTransform = null;
-
-        // Re-enable collider
         if (vegetableCollider != null)
         {
             vegetableCollider.enabled = true;
         }
 
-        // Ensure the vegetable is reset visually and mechanically
-        transform.rotation = Quaternion.identity;
-
-        if (TryGetComponent<CharacterController>(out var characterController))
+        if (characterController != null)
         {
-            characterController.enabled = false;
+            characterController.enabled = true;
         }
 
-        Debug.Log($"{gameObject.name} dropped on client and reset to default state.");
+        transform.rotation = Quaternion.identity;
+    }
+
+    [ClientRpc]
+    private void SyncPanPlacementClientRpc(Vector3 position, Quaternion rotation)
+    {
+        if (IsServer) return;
+
+        transform.position = position;
+        transform.rotation = rotation;
+
+        if (vegetableCollider != null)
+        {
+            vegetableCollider.enabled = true;
+        }
+
+        if (characterController != null)
+        {
+            characterController.enabled = true;
+        }
+
+        UpdateVisualState();
     }
 
     private void Update()
     {
         if (isBeingHeld.Value && followTransform != null)
         {
-            // Server updates position
             if (IsServer)
             {
                 transform.position = followTransform.position;
                 transform.rotation = followTransform.rotation;
-
-                // Sync with clients
                 UpdatePositionClientRpc(transform.position, transform.rotation);
             }
         }
@@ -167,5 +303,4 @@ public class Vegetable : NetworkBehaviour
             transform.rotation = rotation;
         }
     }
-
 }

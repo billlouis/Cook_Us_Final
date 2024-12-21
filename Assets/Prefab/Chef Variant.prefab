@@ -982,7 +982,12 @@ MonoBehaviour:
   mask:
     serializedVersion: 2
     m_Bits: 128
+  panMask:
+    serializedVersion: 2
+    m_Bits: 256
+  panDetectionDistance: 3
   pickupPoint: {fileID: 5813956193550145557}
+  panSpawnPoint: {fileID: 0}
 --- !u!95 &6378795735226392630
 Animator:
   serializedVersion: 5
