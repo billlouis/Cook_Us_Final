@@ -4,7 +4,6 @@ using Unity.Netcode;
 public class Vegetable : NetworkBehaviour
 {
     public float maxHealth = 100f;
-    private NetworkVariable<float> health = new NetworkVariable<float>();
     public NetworkVariable<bool> isParalyzed = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<bool> isBeingHeld = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     private NetworkVariable<bool> isInPan = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -14,7 +13,6 @@ public class Vegetable : NetworkBehaviour
     private PlayerController pc;
 
     private void Start(){
-        health.Value = maxHealth;
         vegetableCollider = GetComponent<Collider>();
         pc = GetComponent<PlayerController>();
     }
@@ -131,16 +129,16 @@ public class Vegetable : NetworkBehaviour
         return isParalyzed.Value && !isBeingHeld.Value && !isInPan.Value;
     }
 
-    public void TakeDamage(float damage)
-    {
-        if (!IsServer) return;
+    // public void TakeDamage(float damage)
+    // {
+    //     if (!IsServer) return;
         
-        health.Value -= damage;
-        if (health.Value <= 0 && !isParalyzed.Value)
-        {
-            Paralyze();
-        }
-    }
+    //     health.Value -= damage;
+    //     if (health.Value <= 0 && !isParalyzed.Value)
+    //     {
+    //         Paralyze();
+    //     }
+    // }
 
     public void OnPickedUp(Transform pickupPoint)
     {
@@ -193,7 +191,7 @@ public class Vegetable : NetworkBehaviour
         isInPan.Value = false;
         isParalyzed.Value = false;
         followTransform = null;
-        health.Value = maxHealth;
+        pc.currentHealth.Value = 20;
 
         if (vegetableCollider != null)
         {
