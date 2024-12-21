@@ -23,12 +23,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 559463394128431587}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.662, z: -0.005}
-  m_LocalScale: {x: 0.19999999, y: 0.19999999, z: 0.19999999}
+  m_LocalRotation: {x: -0.88503116, y: 0.016893461, z: -0.4522055, w: 0.10929163}
+  m_LocalPosition: {x: -0.0005, y: 0.00263, z: 0.00012}
+  m_LocalScale: {x: 0.0039999993, y: 0.003999998, z: 0.0039999997}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2240487245301181375}
+  m_Father: {fileID: 8813366376636503998}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &571937856736617164
@@ -337,7 +337,6 @@ Transform:
   - {fileID: 5068012423609139221}
   - {fileID: 251349347824773959}
   - {fileID: 9121843249305595040}
-  - {fileID: 3974424302013528419}
   - {fileID: 231604484786553180}
   - {fileID: 2764989345857942591}
   m_Father: {fileID: 0}
@@ -399,7 +398,7 @@ MonoBehaviour:
     multiplier: 2
     acceleration: 20
   cheeseAttachPoint: {fileID: 3974424302013528419}
-  cheesePrefab: {fileID: 8670706391565952411, guid: a5dd7cb05b93e3a4cb22f5f8b248a0ed, type: 3}
+  cheesePrefab: {fileID: 8670706391565952411, guid: 118cfaf8f827aa840b1ed77920ca4c2d, type: 3}
   cheeseNetworkPrefab: {fileID: 8670706391565952411, guid: afc7c8ae228f26242897938a844cb504, type: 3}
   animator: {fileID: 2991925166496845794}
 --- !u!143 &7654502690866694316
@@ -888,7 +887,10 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 8f7605484b24afa4eb6269d38a0e095b, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -1812909498023395591, guid: 172a8fcb5d5b3be4c9ea4fb5f273fb97, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3974424302013528419}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 172a8fcb5d5b3be4c9ea4fb5f273fb97, type: 3}
       insertIndex: -1
@@ -923,6 +925,11 @@ Animator:
 --- !u!4 &1950805284156149420 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 172a8fcb5d5b3be4c9ea4fb5f273fb97, type: 3}
+  m_PrefabInstance: {fileID: 2060430281053595975}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8813366376636503998 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -1812909498023395591, guid: 172a8fcb5d5b3be4c9ea4fb5f273fb97, type: 3}
   m_PrefabInstance: {fileID: 2060430281053595975}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7646888879835625497

@@ -200,7 +200,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2851046138941466048}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 7.0500007, z: -19.585003}
+  m_LocalPosition: {x: -5.1199837, y: 7.0500007, z: -23.282099}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -472,7 +472,6 @@ Transform:
   - {fileID: 8096272449119266394}
   - {fileID: 7265845783879468464}
   - {fileID: 5758440875684301022}
-  - {fileID: 8628531263892852413}
   - {fileID: 6805933143930908718}
   - {fileID: 1537868763343924062}
   m_Father: {fileID: 0}
@@ -534,7 +533,7 @@ MonoBehaviour:
     multiplier: 2
     acceleration: 20
   cheeseAttachPoint: {fileID: 8628531263892852413}
-  cheesePrefab: {fileID: 8670706391565952411, guid: a5dd7cb05b93e3a4cb22f5f8b248a0ed, type: 3}
+  cheesePrefab: {fileID: 8670706391565952411, guid: 118cfaf8f827aa840b1ed77920ca4c2d, type: 3}
   cheeseNetworkPrefab: {fileID: 8670706391565952411, guid: afc7c8ae228f26242897938a844cb504, type: 3}
   animator: {fileID: 1776694904018519737}
 --- !u!143 &2883996229795631716
@@ -790,12 +789,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7377896503246568136}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.719, z: -0.005}
-  m_LocalScale: {x: 0.19999999, y: 0.19999999, z: 0.19999999}
+  m_LocalRotation: {x: -0.81507885, y: 0.062400937, z: -0.53910375, w: 0.20278038}
+  m_LocalPosition: {x: -0.00038, y: 0.00105, z: 0.00031}
+  m_LocalScale: {x: 0.0039999997, y: 0.003999998, z: 0.003999999}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7468922383711640058}
+  m_Father: {fileID: 7180188290210611966}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3988623307634411883
@@ -1098,7 +1097,10 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 004d0d7dc61feae4c85cd3f0aa9e80d6, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6502182839619065283, guid: 01849e7372af26841b41eba300cacb9b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8628531263892852413}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 01849e7372af26841b41eba300cacb9b, type: 3}
       insertIndex: -1
@@ -1133,5 +1135,10 @@ Animator:
 --- !u!4 &4473194419489845462 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 01849e7372af26841b41eba300cacb9b, type: 3}
+  m_PrefabInstance: {fileID: 4150423172196259645}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7180188290210611966 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6502182839619065283, guid: 01849e7372af26841b41eba300cacb9b, type: 3}
   m_PrefabInstance: {fileID: 4150423172196259645}
   m_PrefabAsset: {fileID: 0}

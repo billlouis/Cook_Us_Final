@@ -23,12 +23,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3745959837336003318}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.3, z: 0.035}
-  m_LocalScale: {x: 0.19999999, y: 0.19999999, z: 0.19999999}
+  m_LocalRotation: {x: 0.771706, y: -0.004672869, z: 0.62628794, w: -0.1105052}
+  m_LocalPosition: {x: 0.00017, y: -0.00184, z: -0.00208}
+  m_LocalScale: {x: 0.0049999994, y: 0.0050000004, z: 0.0049999994}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 502001429536546992}
+  m_Father: {fileID: 6567807809430396253}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4489007836274795489
@@ -540,7 +540,6 @@ Transform:
   - {fileID: 8416074314881925086}
   - {fileID: 5809610152925821762}
   - {fileID: 1885939985691829623}
-  - {fileID: 455547159136944253}
   - {fileID: 8571212711087744851}
   - {fileID: 9202552260649892116}
   m_Father: {fileID: 0}
@@ -602,7 +601,7 @@ MonoBehaviour:
     multiplier: 2
     acceleration: 20
   cheeseAttachPoint: {fileID: 455547159136944253}
-  cheesePrefab: {fileID: 8670706391565952411, guid: a5dd7cb05b93e3a4cb22f5f8b248a0ed, type: 3}
+  cheesePrefab: {fileID: 8670706391565952411, guid: 118cfaf8f827aa840b1ed77920ca4c2d, type: 3}
   cheeseNetworkPrefab: {fileID: 8670706391565952411, guid: afc7c8ae228f26242897938a844cb504, type: 3}
   animator: {fileID: 1145014717725499085}
 --- !u!143 &1135372601688472258
@@ -884,7 +883,10 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 3ed2e1f3be3f2dc43b9a85c6541ad9ad, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6502182839619065283, guid: 2c6816c03054064468627752e4dda0ce, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 455547159136944253}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2c6816c03054064468627752e4dda0ce, type: 3}
       insertIndex: -1
@@ -921,6 +923,11 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!4 &6567807809430396253 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6502182839619065283, guid: 2c6816c03054064468627752e4dda0ce, type: 3}
+  m_PrefabInstance: {fileID: 79356908640667806}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2295418998929038870
 PrefabInstance:
   m_ObjectHideFlags: 0
