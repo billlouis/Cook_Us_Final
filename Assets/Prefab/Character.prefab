@@ -242,7 +242,7 @@ GameObject:
   - component: {fileID: 7238854852938181717}
   - component: {fileID: 6034066999558347323}
   - component: {fileID: 4815828198957932589}
-  - component: {fileID: 7045465830652113108}
+  - component: {fileID: 1722209776144446531}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -262,10 +262,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2115285985877561650}
   - {fileID: 1421150061639750071}
   - {fileID: 6879794494563786887}
   - {fileID: 8377647925037102544}
-  - {fileID: 6612039721501507355}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -316,7 +316,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7045465830652113108
+--- !u!114 &1722209776144446531
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -574,7 +574,7 @@ Transform:
   m_Father: {fileID: 7238854852938181717}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &7653253815874954121
+--- !u!1001 &3219088254890904992
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -635,8 +635,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0e6eaa4a255d2924b9292dfecc7c7c3f, type: 3}
---- !u!4 &6612039721501507355 stripped
+--- !u!4 &2115285985877561650 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3600485875164617874, guid: 0e6eaa4a255d2924b9292dfecc7c7c3f, type: 3}
-  m_PrefabInstance: {fileID: 7653253815874954121}
+  m_PrefabInstance: {fileID: 3219088254890904992}
   m_PrefabAsset: {fileID: 0}

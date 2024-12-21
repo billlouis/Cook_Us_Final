@@ -51,5 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Cook Us.sln"
+    "dotnet.defaultSolution": "Cook Us.sln",
+    "dotnet.preferCSharpExtension": true
 }
