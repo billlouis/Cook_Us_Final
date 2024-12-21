@@ -123,9 +123,9 @@ MonoBehaviour:
     m_ActionName: Gameplay/Look[/Mouse/delta]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
-        m_MethodName: RightClick
+      - m_Target: {fileID: 8372941167630112888}
+        m_TargetAssemblyTypeName: PlayerInteractVeggie, Assembly-CSharp
+        m_MethodName: Interact
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -449,6 +449,8 @@ GameObject:
   - component: {fileID: 8991078098767368404}
   - component: {fileID: 7843584697026504480}
   - component: {fileID: 3653995083889060166}
+  - component: {fileID: 8372941167630112888}
+  - component: {fileID: 7836085776448380356}
   m_Layer: 0
   m_Name: Broccoli
   m_TagString: Damageable
@@ -526,16 +528,16 @@ MonoBehaviour:
   jumpPower: 3
   maxNumberOfJumps: 2
   movement:
-    isRightClicking: 0
+    isInteracting: 0
     isSprinting: 0
     currentSpeed: 0
     speed: 3
     multiplier: 2
     acceleration: 20
-  cheeseAttachPoint: {fileID: 0}
-  cheesePrefab: {fileID: 8670706391565952411, guid: 118cfaf8f827aa840b1ed77920ca4c2d, type: 3}
+  cheeseAttachPoint: {fileID: 192982998574480749}
+  cheesePrefab: {fileID: 8670706391565952411, guid: f120a96dd5ad5b546b363854ccde7e62, type: 3}
   cheeseNetworkPrefab: {fileID: 8670706391565952411, guid: afc7c8ae228f26242897938a844cb504, type: 3}
-  animator: {fileID: 0}
+  animator: {fileID: 4823246835255820495}
 --- !u!143 &2883996229795631716
 CharacterController:
   m_ObjectHideFlags: 0
@@ -627,7 +629,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TransitionStateInfoList: []
-  m_Animator: {fileID: 0}
+  m_Animator: {fileID: 4823246835255820495}
+--- !u!114 &8372941167630112888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6434442475607491385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaf86d750a77a814c95bae086c3f1ad6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  distance: 6
+  mask:
+    serializedVersion: 2
+    m_Bits: 128
+  reviveHoldTime: 3
+  reviveProgress: 0
+--- !u!114 &7836085776448380356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6434442475607491385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8781561cdc552d4298c991d10716b7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  isParalyzed:
+    m_InternalValue: 0
 --- !u!1 &6473558040327525630
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,6 +802,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cca5671cc886a04a94504ad8e9272f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &7712393584510785956
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 192982998574480749}
+  m_Layer: 0
+  m_Name: CheesetAttach
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &192982998574480749
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7712393584510785956}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5026640698653163116}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2305372156187159471
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -777,6 +844,18 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: dbfc6f198b2bd1f4ab12665cd3f4fe7c, type: 3}
       propertyPath: m_RootOrder
       value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dbfc6f198b2bd1f4ab12665cd3f4fe7c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dbfc6f198b2bd1f4ab12665cd3f4fe7c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dbfc6f198b2bd1f4ab12665cd3f4fe7c, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: dbfc6f198b2bd1f4ab12665cd3f4fe7c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -818,6 +897,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: dbfc6f198b2bd1f4ab12665cd3f4fe7c, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: dbfc6f198b2bd1f4ab12665cd3f4fe7c, type: 3}
       propertyPath: m_Name
       value: Brocoli@Idle
@@ -840,7 +923,10 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 2d5c658e1196b5840ac098ed89f9b0dd, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6502182839619065283, guid: dbfc6f198b2bd1f4ab12665cd3f4fe7c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 192982998574480749}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dbfc6f198b2bd1f4ab12665cd3f4fe7c, type: 3}
       insertIndex: -1
@@ -875,6 +961,11 @@ Animator:
 --- !u!4 &1762291462451612740 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: dbfc6f198b2bd1f4ab12665cd3f4fe7c, type: 3}
+  m_PrefabInstance: {fileID: 2305372156187159471}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5026640698653163116 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6502182839619065283, guid: dbfc6f198b2bd1f4ab12665cd3f4fe7c, type: 3}
   m_PrefabInstance: {fileID: 2305372156187159471}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3988623307634411883

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4999677cb8a1fe4cbd11791a62cb9b9, type: 3}
-  m_Name: Character_Chicken
+  m_Name: Chicken
   m_EditorClassIdentifier: 
   id: 2
   displayName: Chicken
   icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  gameplayPrefab: {fileID: 569377208976420262, guid: c50948a0eac89d74d8cae7cd2f871e03, type: 3}
+  gameplayPrefab: {fileID: 124089903603299974, guid: 9fdb448f7157a934cbdd263da6dd0cd7, type: 3}
