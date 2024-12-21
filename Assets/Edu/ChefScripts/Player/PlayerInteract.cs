@@ -32,7 +32,8 @@ public class PlayerInteract : NetworkBehaviour
             Debug.DrawRay(ray.origin, ray.direction * distance, Color.red);
             if (Physics.Raycast(ray, out RaycastHit hitInfo, distance, mask))
             {
-                if (hitInfo.collider.TryGetComponent<Vegetable>(out var vegetable) && vegetable.CanBePickedUp())
+                Vegetable vegetable = hitInfo.collider.GetComponentInParent<Vegetable>();
+                if (vegetable != null && vegetable.CanBePickedUp())
                 {
                     playerUI.UpdateText("Press E to Pick Up");
 
