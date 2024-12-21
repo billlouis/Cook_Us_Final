@@ -62,22 +62,22 @@ public class PlayerInteract : NetworkBehaviour
     {
         if (heldVegetable == null)
         {
-            Ray ray = new Ray(cam.transform.position, cam.transform.forward);
-            Debug.DrawRay(ray.origin, ray.direction * distance, Color.red);
+            // Ray ray = new Ray(cam.transform.position, cam.transform.forward);
+            // Debug.DrawRay(ray.origin, ray.direction * distance, Color.red);
 
-            if (Physics.Raycast(ray, out RaycastHit hitInfo, distance, mask))
-            {
-                Vegetable vegetable = hitInfo.collider.GetComponentInParent<Vegetable>();
-                if (vegetable != null && vegetable.CanBePickedUp())
-                {
-                    playerUI.UpdateText("Press E to Pick Up");
+            // if (Physics.Raycast(ray, out RaycastHit hitInfo, distance, mask))
+            // {
+            //     Vegetable vegetable = hitInfo.collider.GetComponentInParent<Vegetable>();
+            //     if (vegetable != null && vegetable.CanBePickedUp())
+            //     {
+            //         playerUI.UpdateText("Press E to Pick Up");
 
-                    if (inputManager.onFoot.Interact.triggered)
-                    {
-                        RequestPickUpVegetableServerRpc(vegetable.NetworkObjectId);
-                    }
-                }
-            }
+            //         if (inputManager.onFoot.Interact.triggered)
+            //         {
+            //             RequestPickUpVegetableServerRpc(vegetable.NetworkObjectId);
+            //         }
+            //     }
+            // }
         }
         else
         {
