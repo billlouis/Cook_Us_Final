@@ -8,8 +8,10 @@ public class DropZone : NetworkBehaviour
     {
         if (!IsServer) return;
         var player = other.GetComponent<PlayerController>();
+        Debug.Log("PCFound");
         if (player != null && player.HasCheese())
         {
+            Debug.Log("hascheese");
             // Player drops cheese in the zone
             player.DropCheese();
             CheeseGameManager.Instance.AddCheeseCountServerRpc();
