@@ -169,15 +169,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 784b1ee6ff5a0c247b252dc17a85bff8, type: 3}
       propertyPath: m_LocalScale.x
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 784b1ee6ff5a0c247b252dc17a85bff8, type: 3}
       propertyPath: m_LocalScale.y
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 784b1ee6ff5a0c247b252dc17a85bff8, type: 3}
       propertyPath: m_LocalScale.z
-      value: 100
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 784b1ee6ff5a0c247b252dc17a85bff8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -987,7 +987,6 @@ MonoBehaviour:
     m_Bits: 256
   panDetectionDistance: 3
   pickupPoint: {fileID: 5813956193550145557}
-  panSpawnPoint: {fileID: 0}
 --- !u!95 &6378795735226392630
 Animator:
   serializedVersion: 5
