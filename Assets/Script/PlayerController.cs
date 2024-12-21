@@ -27,7 +27,7 @@ public class PlayerController : NetworkBehaviour
     private PlayerInput playerInput;
     [SerializeField] private float speed;
     private float _velocity;
-    [SerializeField] private Camera _mainCamera;
+    [SerializeField] public Camera _mainCamera;
     [SerializeField] private CinemachineVirtualCamera vc;
     [SerializeField] private AudioListener listener;
     #endregion
@@ -52,7 +52,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private int maxNumberOfJumps = 2;
     #endregion
 
-    [SerializeField] private Movement movement;
+    [SerializeField] public Movement movement;
 
     #region Variables : Cheese
     private GameObject heldCheese; // Only one cheese at a time
@@ -154,7 +154,6 @@ public class PlayerController : NetworkBehaviour
                 {
                     ApplyMovement();
                 }
-                
                 HandleCameraRotation();
                 ApplyAnimationStates();
             }
@@ -401,10 +400,7 @@ public class PlayerController : NetworkBehaviour
         isMoving = _input.sqrMagnitude > 0;
     }
 
-    public void RightClick(InputAction.CallbackContext context)
-    {
-        movement.isRightClicking = context.started || context.performed;
-    }
+    
 
     private IEnumerator WaitForLanding()
     {
@@ -421,7 +417,7 @@ public class PlayerController : NetworkBehaviour
 [System.Serializable]
 public struct Movement
 {
-    [HideInInspector] public bool isRightClicking;
+    [HideInInspector] public bool isInteracting;
     [HideInInspector] public bool isSprinting;
     [HideInInspector] public float currentSpeed;
     public float speed;

@@ -9,11 +9,12 @@ public class Vegetable : NetworkBehaviour
     private NetworkVariable<bool> isBeingHeld = new NetworkVariable<bool>(false);
     private Collider vegetableCollider;
     private Transform followTransform; // The point the vegetable should follow when picked up.
-
+    private PlayerController pc;
     private void Start()
     {
         health = maxHealth;
         vegetableCollider = GetComponent<Collider>();
+        pc = GetComponent<PlayerController>();
     }
 
     public bool CanBePickedUp()
@@ -36,7 +37,43 @@ public class Vegetable : NetworkBehaviour
 
         Debug.Log($"{gameObject.name} picked up by server.");
     }
+    public void Revive()
+    {
+        if (!IsServer) return;
 
+        // Reset the vegetable's state
+        isParalyzed.Value = false;
+        pc.currentHealth.Value = 10;
+
+        // Reset appearance
+        if (TryGetComponent<Renderer>(out var renderer))
+        {
+            renderer.material.color = Color.white; // Or whatever your default color is
+        }
+        if (vegetableCollider != null)
+        {
+            vegetableCollider.enabled = true;
+        }
+
+        // Notify clients about the revival
+        ReviveClientRpc();
+    }
+    [ClientRpc]
+    private void ReviveClientRpc()
+    {
+        if (!IsServer)
+        {
+            if (vegetableCollider != null)
+            {
+                vegetableCollider.enabled = true;
+            }
+            // Update any client-side visual effects or states
+            if (TryGetComponent<Renderer>(out var renderer))
+            {
+                renderer.material.color = Color.white; // Or whatever your default color is
+            }
+        }
+    }
     public void OnDropped()
     {
         if (!IsServer) return;
@@ -49,10 +86,6 @@ public class Vegetable : NetworkBehaviour
         {
             vegetableCollider.enabled = true;
         }
-
-        // Reset health and state
-        health = 10;
-        isParalyzed.Value = false;
 
         Debug.Log($"{gameObject.name} dropped by server.");
     }

@@ -15,4 +15,4 @@ MonoBehaviour:
   id: 3
   displayName: AYAM
   icon: {fileID: 21300000, guid: 91bbe9746f534fe46b2c0001cec43f9f, type: 3}
-  gameplayPrefab: {fileID: 3274278736064308668, guid: c50948a0eac89d74d8cae7cd2f871e03, type: 3}
+  gameplayPrefab: {fileID: 5494581674258837215, guid: bc6bf5f3c5fd28e4192d999db50f2930, type: 3}
