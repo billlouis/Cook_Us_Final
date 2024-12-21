@@ -3,9 +3,11 @@ using UnityEngine;
 using Unity.Netcode;
 public class MeleeAttack : NetworkBehaviour
 {
-    public Animator animator; // Reference to the Animator for the attack animation
-    public Collider fryingPanCollider; // Collider for detecting hits
-    public int damage = 10; // Amount of damage dealt
+    public Animator animator;
+    public Collider fryingPanCollider;
+    public int damage = 10;
+    private bool isAttacking = false; 
+
     private NetworkVariable<bool> isHitting = new NetworkVariable<bool>(
         false,
         NetworkVariableReadPermission.Everyone,
@@ -28,9 +30,11 @@ public class MeleeAttack : NetworkBehaviour
 
     public void Attack()
     {
-        if(!IsOwner) return;
+        if (!IsOwner) return;
+        if (isAttacking) return; // Prevent attack spam
+        
+        isAttacking = true;
         isHitting.Value = true;
-    
         StartCoroutine(EnableCollider());
     }
 
@@ -38,12 +42,13 @@ public class MeleeAttack : NetworkBehaviour
     {
         fryingPanCollider.enabled = true;
 
-        yield return new WaitForSeconds(1.15f); // Enable the collider during the hit moment
+        yield return new WaitForSeconds(1.967f);
         fryingPanCollider.enabled = false;
 
-        yield return new WaitForSeconds(1.0f); // Allow the attack animation to complete
+        // yield return new WaitForSeconds(1.0f);
 
         isHitting.Value = false;
+        isAttacking = false; // Reset attack state when animation is complete
     }
 
 }
