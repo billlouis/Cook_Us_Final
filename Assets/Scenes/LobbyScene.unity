@@ -3243,11 +3243,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerCharacterList:
   - {fileID: 21300000, guid: 91bbe9746f534fe46b2c0001cec43f9f, type: 3}
-  - {fileID: 21300000, guid: 303b057b4e64027439743717ea7135a9, type: 3}
-  - {fileID: 21300000, guid: f79b684815ea3b84893f4fa19d469ece, type: 3}
-  - {fileID: 21300000, guid: f20b17fd4768bb74daf88f8e12a39222, type: 3}
-  - {fileID: 21300000, guid: 1b4409c50cfb362448beec181a015a70, type: 3}
-  - {fileID: 21300000, guid: 1137f43745041e24e81f21723f5e22ce, type: 3}
+  - {fileID: 21300000, guid: 8e10a445634c9e041a7adbcb2662bf47, type: 3}
+  - {fileID: 21300000, guid: f94c47d5a198a204c8ad34cfaf812c74, type: 3}
+  - {fileID: 21300000, guid: a397b728bc088c74f949936c22e12cdf, type: 3}
+  - {fileID: 21300000, guid: 0aacf1b6d9bda4c49b1aad80124ce670, type: 3}
+  - {fileID: 21300000, guid: cb6c4f4d51393a24195139eae145e695, type: 3}
 --- !u!1 &1491740558
 GameObject:
   m_ObjectHideFlags: 0

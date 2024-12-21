@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4999677cb8a1fe4cbd11791a62cb9b9, type: 3}
   m_Name: Character_Chef
   m_EditorClassIdentifier: 
-  id: 1
+  id: 0
   displayName: Chef
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   gameplayPrefab: {fileID: 6917421003858760979, guid: 1df3f793d0bbfc74ea2ab2d67a1bd04e, type: 3}

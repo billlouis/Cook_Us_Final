@@ -36,12 +36,17 @@ public class CharacterColorSelectSingleUI : MonoBehaviour
     {
         if (GameMultiplayer.Instance.GetPlayerData().characterId == characterId)
         {
+            Debug.Log("selected" +  characterId);
             Color currentColor = image.color;
-            currentColor.a = 100;
+            currentColor.a = 0.5f;
+            image.color = currentColor;
+            Debug.Log(image.color);
         }
         else
         {
-            //selectedGameObject.SetActive(false);
+            Color currentColor = image.color;
+            currentColor.a = 1;
+            image.color = currentColor;
         }
     }
 

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4999677cb8a1fe4cbd11791a62cb9b9, type: 3}
   m_Name: Character_Chicken
   m_EditorClassIdentifier: 
-  id: 2
+  id: 1
   displayName: Chicken
   icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   gameplayPrefab: {fileID: 7694119648309873621, guid: c50948a0eac89d74d8cae7cd2f871e03, type: 3}
