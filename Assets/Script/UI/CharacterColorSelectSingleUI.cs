@@ -23,7 +23,7 @@ public class CharacterColorSelectSingleUI : MonoBehaviour
     private void Start()
     {
         GameMultiplayer.Instance.OnPlayerDataNetworkListChanged += GameMultiplayer_OnPlayerDataNetworkListChanged;
-        //image.color = GameMultiplayer.Instance.GetPlayerCharacter(characterId);
+        image.sprite = GameMultiplayer.Instance.GetPlayerCharacter(characterId);
         UpdateIsSelected();
     }
 

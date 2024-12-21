@@ -33,7 +33,7 @@ public class CharacterSelectPlayer : MonoBehaviour
         GameMultiplayer.Instance.OnPlayerDataNetworkListChanged += GameMultiplayer_OnPlayerDataNetworkListChanged;
         CharacterSelectReady.Instance.OnReadyChanged += CharacterSelectReady_OnReadyChanged;
 
-        kickButton.gameObject.SetActive(NetworkManager.Singleton.IsServer);
+        kickButton.gameObject.SetActive(NetworkManager.Singleton.IsHost);
         if (playerIndex == 0)
         {
             kickButton.gameObject.SetActive(false);
