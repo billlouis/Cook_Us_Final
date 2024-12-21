@@ -14,9 +14,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CharacterSelectScene.unity
     guid: 855a9e00b4022184c9d25cf9822c40eb
-  - enabled: 0
-    path: Assets/Scenes/CharacterSelectScene2.unity
-    guid: fba1ed4e664d5d243b1589b5aad59541
   - enabled: 1
     path: Assets/Scenes/LoadingScene.unity
     guid: 60ab9e263005a1941b7596020667d44f

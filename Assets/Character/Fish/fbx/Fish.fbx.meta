@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cc8e44196face5548aaf2863c37446cf
+guid: 533eec80b506d9a47be85244b0109a20
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -79,19 +79,19 @@ ModelImporter:
     normalSmoothingSource: 0
   referencedClips:
   - 7b054bb1297ce084e96b76eeaaab33e2
-  - 2a53898dd73fa0a489ca3a08b70814c7
+  - 2deb17d47e1b72344a31ff0cc05284b2
   - a2f494d7e529b0a46952fddd9dc4c0a5
-  - 8e0e2ac957935ff468a25e7f382aeed9
+  - 495c60c0b0a070e4987019f94a7d9f1d
   - d8a4576428eaa8e4185011600284703b
-  - 1b635e495b8e78f45a8c6ed93de8bc97
+  - a21449a8604ac5447a9f3ea5a05983ed
   - 3fa581016ea2624418b7809bb9ce5a80
-  - 8c222d46944ba7e4785d43415610fe77
+  - 87aae36a2c015324083edefc50c9bda1
   - 477abbdfa25f7d14e8a9e42093f4b440
-  - f2e36067b78ebc943bb3ed01afd9ac84
+  - d17b2101ba34bc140b318b03c9e30005
   - 151638812fcab254b9ae40d93bfebe0a
-  - acb960b5fc6adb447a20d51b500c6e18
+  - 8db77aa023baf3e41907b2e24ee61706
   - 509797df02dbd8c45837b0b8f0eb4a41
-  - 15bd01e3a7bd7434a8e6c50039ea2ce2
+  - acbb51e7157b2704282182d4ad9d843d
   importAnimation: 1
   humanDescription:
     serializedVersion: 3
