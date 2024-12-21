@@ -10,7 +10,8 @@ using System;
 public class PlayerController : NetworkBehaviour 
 {
 
-    
+    private Vegetable vege;
+    private NetworkVariable<bool> canMove = new NetworkVariable<bool>(true, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
     [SerializeField] private int maxHealth = 100;
     public HealthBarScript healthBar;
     public GameObject hb;
@@ -26,7 +27,7 @@ public class PlayerController : NetworkBehaviour
     private PlayerInput playerInput;
     [SerializeField] private float speed;
     private float _velocity;
-    [SerializeField] private Camera _mainCamera;
+    [SerializeField] public Camera _mainCamera;
     [SerializeField] private CinemachineVirtualCamera vc;
     [SerializeField] private AudioListener listener;
     #endregion
@@ -51,7 +52,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private int maxNumberOfJumps = 2;
     #endregion
 
-    [SerializeField] private Movement movement;
+    [SerializeField] public Movement movement;
 
     #region Variables : Cheese
     private GameObject heldCheese; // Only one cheese at a time
@@ -113,13 +114,14 @@ public class PlayerController : NetworkBehaviour
     }
     private void OnHealthChanged(int previousValue, int newValue)
     {
-        Debug.Log("newVal" + newValue);
-        Debug.Log("prevVal:" + previousValue);
-        Debug.Log("hbv"+ healthBar.slider.value);
-        Debug.Log("currentHealth" + currentHealth);
+        
+        // Debug.Log("newVal" + newValue);
+        // Debug.Log("prevVal:" + previousValue);
+        // Debug.Log("hbv"+ healthBar.slider.value);
+        // Debug.Log("currentHealth" + currentHealth);
         if (newValue <= 0)
         {
-            HandleDeath();
+            HandleDeath();  
         }
     }
     private void Start()
@@ -127,7 +129,7 @@ public class PlayerController : NetworkBehaviour
         _characterController = GetComponent<CharacterController>();
         playerInput = new();
         playerInput.Enable();
-
+        vege = GetComponent<Vegetable>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -136,44 +138,45 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsOwner)
         {
-            ApplyRotation();
-            ApplyGravity();
-            
-            // Handle knockback first
-            if (isBeingKnockedBack)
-            {
-                healthBar.SetHealth (currentHealth.Value);
-                ApplyKnockback();
+            if(!vege.isParalyzed.Value){
+                ApplyRotation();
+                ApplyGravity();
+                
+                // Handle knockback first
+                if (isBeingKnockedBack)
+                {
+                    healthBar.SetHealth (currentHealth.Value);
+                    ApplyKnockback();
+                }
+                
+                // Only apply normal movement if not being knocked back
+                if (!isBeingKnockedBack)
+                {
+                    ApplyMovement();
+                }
+                HandleCameraRotation();
+                ApplyAnimationStates();
             }
-            
-            // Only apply normal movement if not being knocked back
-            if (!isBeingKnockedBack)
-            {
-                ApplyMovement();
-            }
-            
-            HandleCameraRotation();
-            ApplyAnimationStates();
         }
     }
     private void ApplyKnockback()
     {
+        if (_characterController == null || !_characterController.enabled)
+        {
+            return; // Skip knockback if CharacterController is inactive
+        }
+
         if (currentKnockbackTime < knockbackDuration)
         {
-            // Calculate how far through the knockback we are (0 to 1)
             float knockbackProgress = currentKnockbackTime / knockbackDuration;
-            
-            // Smoothly reduce the knockback force over time
             Vector3 knockbackMove = Vector3.Lerp(currentKnockbackVelocity, Vector3.zero, knockbackProgress);
-            
-            // Apply the movement
+
             _characterController.Move(knockbackMove * Time.deltaTime);
-            
+
             currentKnockbackTime += Time.deltaTime;
         }
         else
         {
-            // Reset knockback state
             isBeingKnockedBack = false;
             currentKnockbackTime = 0f;
             currentKnockbackVelocity = Vector3.zero;
@@ -247,10 +250,16 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     private void HandleDeathClientRpc()
     {
-        // Visual feedback for death (e.g., play animation or disable object)
-        //gameObject.SetActive(false);
-        currentHealth.Value = 100;
+        // Find the vegetable associated with the health change
+        if (TryGetComponent<Vegetable>(out var vegetable))
+        {
+            vegetable.Paralyze(); // Call the paralyze method on the vegetable
+        }
+
+        // Visual feedback for death can go here (e.g., play animation)
+        Debug.Log($"{gameObject.name} is now paralyzed and can be picked up.");
     }
+
 
     [ServerRpc(RequireOwnership = false)]
     public void ApplyKnockbackServerRpc(int damage, Vector3 knockbackDirection, float knockbackForce)
@@ -340,11 +349,16 @@ public class PlayerController : NetworkBehaviour
 
     private void ApplyMovement()
     {
+        if (_characterController == null || !_characterController.enabled || !IsOwner)
+        {
+            return; // Skip movement if CharacterController is inactive or not owned by this player
+        }
+
         var targetSpeed = movement.isSprinting ? movement.speed * movement.multiplier : movement.speed;
-        
         movement.currentSpeed = Mathf.MoveTowards(movement.currentSpeed, targetSpeed, movement.acceleration * Time.deltaTime);
         _characterController.Move(_direction * movement.currentSpeed * Time.deltaTime);
     }
+
 
     private void ApplyGravity()
     {
@@ -386,10 +400,7 @@ public class PlayerController : NetworkBehaviour
         isMoving = _input.sqrMagnitude > 0;
     }
 
-    public void RightClick(InputAction.CallbackContext context)
-    {
-        movement.isRightClicking = context.started || context.performed;
-    }
+    
 
     private IEnumerator WaitForLanding()
     {
@@ -406,7 +417,7 @@ public class PlayerController : NetworkBehaviour
 [System.Serializable]
 public struct Movement
 {
-    [HideInInspector] public bool isRightClicking;
+    [HideInInspector] public bool isInteracting;
     [HideInInspector] public bool isSprinting;
     [HideInInspector] public float currentSpeed;
     public float speed;

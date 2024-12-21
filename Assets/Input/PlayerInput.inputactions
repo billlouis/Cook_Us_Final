@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "RightClick",
+                    "name": "Interact",
                     "type": "Button",
                     "id": "e31a5cca-b471-42f2-a460-89d9e831f727",
                     "expectedControlType": "Button",
@@ -143,11 +143,11 @@
                 {
                     "name": "",
                     "id": "35659e4f-931a-47e7-9610-3c6216211d46",
-                    "path": "<Mouse>/rightButton",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "RightClick",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

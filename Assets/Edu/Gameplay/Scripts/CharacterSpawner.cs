@@ -21,7 +21,7 @@ public class CharacterSpawner : NetworkBehaviour
             Debug.Log(characterDatabase.GetCharacterById(GameMultiplayer.Instance.GetPlayerDataFromClientId(clientId).characterId));
             Debug.Log(character);
             if(character != null){
-                var spawnPos = new Vector3(Random.Range(-3f, 3f), 3f, Random.Range(-3f, 3f));
+                var spawnPos = new Vector3(Random.Range(-3f, 3f), 5f, Random.Range(-3f, 3f));
                 var characterInstance = Instantiate(character.GameplayPrefab, spawnPos, Quaternion.identity);
                 characterInstance.SpawnAsPlayerObject(clientId);
             }

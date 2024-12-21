@@ -15,4 +15,4 @@ MonoBehaviour:
   id: 2
   displayName: Chicken
   icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  gameplayPrefab: {fileID: 7785415908083086579, guid: 013d616d4baa732429cea4a2e96483db, type: 3}
+  gameplayPrefab: {fileID: 569377208976420262, guid: c50948a0eac89d74d8cae7cd2f871e03, type: 3}
